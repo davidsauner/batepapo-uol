@@ -1,3 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
 body{
-    background-color: red;
+    font-family: 'Roboto', sans-serif;
+}
+.topo{
+    width: 380px;
+    height: 80px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.vector{
+    width: 42px;
+    height: 30px;
+}
+
+/*corpo e cor das mensagens*/
+.chat{
+    width: 380px;
+    height: 480px;
+    overflow:scroll
+    
+}
+h1{
+    font-size: 14px;
+    margin: 0 5px;
+}
+.mensagemtodos{
+    background-color: gray;
+}
+.mensagemprivada{
+    background-color: #FFDEDE;
+}
+.mensagemstatus{
+    background-color: 
+    #DCDCDC;
+}
+.text{
+    word-break: break-all;
+}
+.msg{
+    
+    align-items: center;
+    font-size: 14px;
+    display: flex;
+    width: 380px;
+    height: 40px;
+}
+.none{
+    display:none
+}
+.footer{
+    width: 380px;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+input{
+    width: 300px;
+}
+ion-icon{
+    font-size: 27px;
 }
