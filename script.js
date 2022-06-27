@@ -25,7 +25,7 @@ function nomeRecusado() {
 let objt = [];
 //PEGA MENSAGEM DO SERVIODOR
 attmsg();
-//setInterval(attmsg, 3000)
+setInterval(attmsg, 3000);
 function attmsg() {
   const promessamensagem = axios.get(
     "https://mock-api.driven.com.br/api/v6/uol/messages"
@@ -53,7 +53,7 @@ function conexaopositvo() {
   console.log("nome atualizado certo");
 }
 function conexainegativo() {
-  alert("Você foi desconectado por inatividade !!")
+  alert("Você foi desconectado por inatividade !!");
   console.log("nome quitou F");
   location.reload();
 }
@@ -86,7 +86,6 @@ let escreve = "";
 function enviarMsg() {
   console.log("chamou enviarmsg");
   escreve = document.querySelector(".corpomsg").value;
-  console.log(escreve);
   let objtmsg = {
     from: nome,
     to: "Todos",
@@ -102,10 +101,17 @@ function enviarMsg() {
   enviando.catch(naoenviou);
   escreve = document.querySelector(".corpomsg").value = "";
 }
+
+document.addEventListener("keypress", function apertouenter(e) {
+  if (e.key === "Enter") {
+    enviarMsg();
+  }
+});
+
 function envioumsg() {
-  console.log("enviou a msg");
   attmsg();
 }
 function naoenviou() {
-  console.log("nao enviou a msg");
+  alert("Erro ao enviar a mensagem, por gentileza entrar novamente!");
+  location.reload();
 }
