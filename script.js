@@ -1,63 +1,111 @@
-/*let nome = prompt("qual seu nome")
-let nomedeentrada = {name:nome}
-
-
-function peganome(){
-    let chat = document.querySelector(".chat")
-    chat.innerHTML += `<div class="mensagemstatus msg">
-     ${nomedeentrada.name}  :</div>`
-    
-}*/
+let nome = prompt("qual seu nome");
+let nomedeentrada = { name: nome };
+console.log(nomedeentrada);
+//Função de login ainda cru
+peganome();
+function peganome() {
+  let pedidonome = axios.post(
+    "https://mock-api.driven.com.br/api/v6/uol/participants",
+    nomedeentrada
+  );
+  pedidonome.then(nomeAceito);
+  pedidonome.catch(nomeRecusado);
+  console.log(pedidonome);
+}
+function nomeAceito() {
+  console.log("deu boa");
+}
+function nomeRecusado() {
+  console.log("deu ruim");
+  alert("nome ja utilizado pf tente outro");
+  location.reload();
+}
 
 //LISTA DE MENSAGEM
 let objt = [];
 //PEGA MENSAGEM DO SERVIODOR
+attmsg();
+//setInterval(attmsg, 3000)
+function attmsg() {
+  const promessamensagem = axios.get(
+    "https://mock-api.driven.com.br/api/v6/uol/messages"
+  );
 
-
-
-     const promessamensagem = axios.get(
-        "https://mock-api.driven.com.br/api/v6/uol/messages"
-      );
-
-
-
-promessamensagem.then(mensagemserver);
-console.log(promessamensagem);
-function mensagemserver(resposta) {
-    
-  console.log(resposta.data);
-  objt = resposta.data;
-  colocaMsg();
-  focarNaUltimaMensagem()
+  promessamensagem.then(mensagemserver);
+  function mensagemserver(resposta) {
+    objt = resposta.data;
+    colocaMsg();
+    focarNaUltimaMensagem();
+  }
 }
 
+//MANTER A USUARIO CONECTADO, INTAVALO 5 SEC!
+setInterval(manterConectado, 5000);
+function manterConectado() {
+  let conexao = axios.post(
+    "https://mock-api.driven.com.br/api/v6/uol/status",
+    nomedeentrada
+  );
+  conexao.then(conexaopositvo);
+  conexao.catch(conexainegativo);
+}
+function conexaopositvo() {
+  console.log("nome atualizado certo");
+}
+function conexainegativo() {
+  alert("Você foi desconectado por inatividade !!")
+  console.log("nome quitou F");
+  location.reload();
+}
+
+//COLOCA MENSAGEM DO SERVIDOR
 function colocaMsg() {
   let chat = document.querySelector(".chat");
   for (let i = 0; i < objt.length; i++) {
     if (objt[i].type === "status") {
       chat.innerHTML += `<li class="mensagemstatus msg">
-             <span>${objt[i].time}</span> ${objt[i].from}  <span class="text">${objt[i].text}</span>:</li>`;
+             <span class="hora">(${objt[i].time})</span> <span class="usuario">${objt[i].from}:</span>  <span class="text">${objt[i].text}</span></li>`;
     }
     if (objt[i].type === "message") {
-        chat.innerHTML += `<li class="mensagemtodos msg">
-               <span>${objt[i].time}</span> ${objt[i].from}  <span class="text">${objt[i].text}</span>:</li>`;
-      }
-      if (objt[i].type === "private_message") {
-        chat.innerHTML += `<li class="mensagemprivada msg">
-               <span>${objt[i].time}</span> ${objt[i].from}  <span class="text">${objt[i].text}</span>:</li>`;
-      }
-
+      chat.innerHTML += `<li class="mensagemtodos msg">
+      <span class="hora">(${objt[i].time})</span> <span class="usuario">${objt[i].from}:</span>  <span class="text">${objt[i].text}</span></li>`;
+    }
+    if (objt[i].type === "private_message" && objt[i].to === nomedeentrada) {
+      chat.innerHTML += `<li class="mensagemprivada msg">
+      <span class="hora">(${objt[i].time})</span> <span class="usuario">${objt[i].from}</span>  <span class="text">${objt[i].text}</span></li>`;
+    }
   }
 }
-function focarNaUltimaMensagem(){
-    let chat = document.querySelector(".chat");
-    let ultimamensagem = chat.lastElementChild
-    ultimamensagem.scrollIntoView()
-
-
+function focarNaUltimaMensagem() {
+  let chat = document.querySelector(".chat");
+  let ultimamensagem = chat.lastElementChild;
+  ultimamensagem.scrollIntoView();
 }
-
-/*[{from:"João",to:"Todos",text:"entra na sala...",time: "08:01:17"},
- {from:"carol",to:"Todos",text:"entra na sala...",time: "08:05:17",},
- {from:"paulo",to:"Todos",text:"entra na sala...",time: "08:09:17",},
- {from:"gilberto",to:"Todos",text:"entra na sala...",time: "08:11:17",}]*/
+// FUNÇÂO DE ENVIAR A MSG E PEGAR DO CORPO DO INPUT
+let escreve = "";
+function enviarMsg() {
+  console.log("chamou enviarmsg");
+  escreve = document.querySelector(".corpomsg").value;
+  console.log(escreve);
+  let objtmsg = {
+    from: nome,
+    to: "Todos",
+    text: escreve,
+    type: "message",
+  };
+  console.log(objtmsg);
+  let enviando = axios.post(
+    "https://mock-api.driven.com.br/api/v6/uol/messages",
+    objtmsg
+  );
+  enviando.then(envioumsg);
+  enviando.catch(naoenviou);
+  escreve = document.querySelector(".corpomsg").value = "";
+}
+function envioumsg() {
+  console.log("enviou a msg");
+  attmsg();
+}
+function naoenviou() {
+  console.log("nao enviou a msg");
+}
